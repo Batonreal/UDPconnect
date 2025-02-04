@@ -52,19 +52,19 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.lineEdit = QLineEdit(Dialog)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.ipConfig = QLineEdit(Dialog)
+        self.ipConfig.setObjectName(u"ipConfig")
         font1 = QFont()
         font1.setPointSize(11)
-        self.lineEdit.setFont(font1)
+        self.ipConfig.setFont(font1)
 
-        self.horizontalLayout_2.addWidget(self.lineEdit)
+        self.horizontalLayout_2.addWidget(self.ipConfig)
 
-        self.lineEdit_2 = QLineEdit(Dialog)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setFont(font1)
+        self.portConfig = QLineEdit(Dialog)
+        self.portConfig.setObjectName(u"portConfig")
+        self.portConfig.setFont(font1)
 
-        self.horizontalLayout_2.addWidget(self.lineEdit_2)
+        self.horizontalLayout_2.addWidget(self.portConfig)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -73,19 +73,19 @@ class Ui_Dialog(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.horizontalLayout_3.setContentsMargins(12, 0, -1, -1)
-        self.label_2 = QLabel(Dialog)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setMinimumSize(QSize(0, 0))
-        self.label_2.setMaximumSize(QSize(16777215, 20))
+        self.ipInfo = QLabel(Dialog)
+        self.ipInfo.setObjectName(u"ipInfo")
+        self.ipInfo.setMinimumSize(QSize(0, 0))
+        self.ipInfo.setMaximumSize(QSize(16777215, 20))
 
-        self.horizontalLayout_3.addWidget(self.label_2)
+        self.horizontalLayout_3.addWidget(self.ipInfo)
 
-        self.label = QLabel(Dialog)
-        self.label.setObjectName(u"label")
-        self.label.setMinimumSize(QSize(0, 0))
-        self.label.setMaximumSize(QSize(16777215, 20))
+        self.portInfo = QLabel(Dialog)
+        self.portInfo.setObjectName(u"portInfo")
+        self.portInfo.setMinimumSize(QSize(0, 0))
+        self.portInfo.setMaximumSize(QSize(16777215, 20))
 
-        self.horizontalLayout_3.addWidget(self.label)
+        self.horizontalLayout_3.addWidget(self.portInfo)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -143,13 +143,13 @@ class Ui_Dialog(object):
     # setupUi
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
+        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"UDPmaster", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 ip \u0430\u0434\u0440\u0435\u0441", None))
         self.label_4.setText(QCoreApplication.translate("Dialog", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u043e\u0440\u0442", None))
-        self.lineEdit.setText(QCoreApplication.translate("Dialog", u"192.168.0.15", None))
-        self.lineEdit_2.setText(QCoreApplication.translate("Dialog", u"6868", None))
-        self.label_2.setText(QCoreApplication.translate("Dialog", u"\u0430\u0444\u044b\u0430\u044b", None))
-        self.label.setText(QCoreApplication.translate("Dialog", u"\u0444\u044b\u0430\u0444\u044b\u0430", None))
+        self.ipConfig.setText(QCoreApplication.translate("Dialog", u"192.168.0.15", None))
+        self.portConfig.setText(QCoreApplication.translate("Dialog", u"6868", None))
+        self.ipInfo.setText(QCoreApplication.translate("Dialog", u"\u0430\u0444\u044b\u0430\u044b", None))
+        self.portInfo.setText(QCoreApplication.translate("Dialog", u"\u0444\u044b\u0430\u0444\u044b\u0430", None))
         self.lineEdit_3.setText("")
         self.pushButton.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
     # retranslateUi
