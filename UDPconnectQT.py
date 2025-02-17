@@ -23,7 +23,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(455, 384)
+        Dialog.resize(460, 371)
         Dialog.setSizeGripEnabled(True)
         self.verticalLayout_2 = QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -117,16 +117,17 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addItem(self.verticalSpacer_2)
 
-        self.pushButton = QPushButton(Dialog)
-        self.pushButton.setObjectName(u"pushButton")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.pushButton_2 = QPushButton(Dialog)
+        self.pushButton_2.setObjectName(u"pushButton_2")
         font3 = QFont()
         font3.setPointSize(13)
-        self.pushButton.setFont(font3)
-        self.pushButton.setStyleSheet(u"QPushButton {\n"
+        self.pushButton_2.setFont(font3)
+        self.pushButton_2.setStyleSheet(u"QPushButton {\n"
 "color: black;\n"
 "background-color: rgba(0, 0, 0, 40);\n"
-"border: 1px solid rgba(0, 0, 0, 50);\n"
-"border-radius: 7 px;\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
 "}\n"
 "QPushButton:hover {\n"
 "background-color: rgba(0, 0, 0, 50);\n"
@@ -136,7 +137,28 @@ class Ui_Dialog(object):
 "background-color: rgba(0, 0, 0, 80);\n"
 "}")
 
-        self.verticalLayout.addWidget(self.pushButton)
+        self.horizontalLayout_5.addWidget(self.pushButton_2)
+
+        self.pushButton = QPushButton(Dialog)
+        self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.setFont(font3)
+        self.pushButton.setStyleSheet(u"QPushButton {\n"
+"color: black;\n"
+"background-color: rgba(0, 0, 0, 40);\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
+"}\n"
+"QPushButton:hover {\n"
+"background-color: rgba(0, 0, 0, 50);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"background-color: rgba(0, 0, 0, 80);\n"
+"}")
+
+        self.horizontalLayout_5.addWidget(self.pushButton)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
 
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -156,6 +178,7 @@ class Ui_Dialog(object):
         self.ipInfo.setText(QCoreApplication.translate("Dialog", u"\u0412\u0430\u0448 ip:", None))
         self.portInfo.setText(QCoreApplication.translate("Dialog", u"\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u043d\u044b\u0439 \u043f\u043e\u0440\u0442:", None))
         self.textMessage.setText("")
+        self.pushButton_2.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0431\u0430\u0439\u0442\u044b", None))
         self.pushButton.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
     # retranslateUi
 

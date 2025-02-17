@@ -52,6 +52,7 @@ class UDPSenderApp(QDialog):
 
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
+        self.ui.pushButton_2.clicked.connect(self.send_bin_message)
 
         ip_address = socket.gethostbyname(socket.gethostname())
         self.ui.ipInfo.setText(f"Ваш IP адрес: {ip_address}")
@@ -71,6 +72,29 @@ class UDPSenderApp(QDialog):
             # Отправляем сообщение
             sock.sendto(message.encode(), (ip, port))
             print(f"Сообщение отправлено на {ip}:{port}")
+        except Exception as e:
+            print(f"Ошибка при отправке сообщения: {e}")
+        finally:
+            # Закрываем сокет
+            sock.close()
+    
+    def send_bin_message(self):
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+        
+        # Пример данных: 4-байтовые бинарные данные и три числа uint32
+        bin_data = (1).to_bytes(4, 'big')  # Пример 4-байтовых бинарных данных
+        uint32_data = (123456, 789012, 345678)  # Пример чисел uint32
+
+        # Преобразуем данные в байты
+        message = bin_data + b''.join(x.to_bytes(4, 'big') for x in uint32_data)
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        try:
+            # Отправляем сообщение
+            sock.sendto(message, (ip, port))
+            print(f"Сообщение отправлено на {ip}:{port} в формате bin32 и uint32")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
