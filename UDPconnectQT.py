@@ -17,13 +17,13 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout, QLabel,
     QLayout, QLineEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QSpacerItem, QTextBrowser, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(462, 253)
+        Dialog.resize(455, 384)
         Dialog.setSizeGripEnabled(True)
         self.verticalLayout_2 = QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -94,19 +94,24 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
-        self.lineEdit_3 = QLineEdit(Dialog)
-        self.lineEdit_3.setObjectName(u"lineEdit_3")
-        self.lineEdit_3.setEnabled(True)
+        self.textMessage = QLineEdit(Dialog)
+        self.textMessage.setObjectName(u"textMessage")
+        self.textMessage.setEnabled(True)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEdit_3.sizePolicy().hasHeightForWidth())
-        self.lineEdit_3.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.textMessage.sizePolicy().hasHeightForWidth())
+        self.textMessage.setSizePolicy(sizePolicy)
         font2 = QFont()
         font2.setPointSize(15)
-        self.lineEdit_3.setFont(font2)
+        self.textMessage.setFont(font2)
 
-        self.verticalLayout.addWidget(self.lineEdit_3)
+        self.verticalLayout.addWidget(self.textMessage)
+
+        self.textBrowser = QTextBrowser(Dialog)
+        self.textBrowser.setObjectName(u"textBrowser")
+
+        self.verticalLayout.addWidget(self.textBrowser)
 
         self.verticalSpacer_2 = QSpacerItem(10, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -143,14 +148,14 @@ class Ui_Dialog(object):
     # setupUi
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"UDPmaster", None))
+        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"UDPconnect", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 ip \u0430\u0434\u0440\u0435\u0441", None))
         self.label_4.setText(QCoreApplication.translate("Dialog", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043f\u043e\u0440\u0442", None))
         self.ipConfig.setText(QCoreApplication.translate("Dialog", u"192.168.0.15", None))
         self.portConfig.setText(QCoreApplication.translate("Dialog", u"6868", None))
-        self.ipInfo.setText(QCoreApplication.translate("Dialog", u"\u0430\u0444\u044b\u0430\u044b", None))
-        self.portInfo.setText(QCoreApplication.translate("Dialog", u"\u0444\u044b\u0430\u0444\u044b\u0430", None))
-        self.lineEdit_3.setText("")
+        self.ipInfo.setText(QCoreApplication.translate("Dialog", u"\u0412\u0430\u0448 ip:", None))
+        self.portInfo.setText(QCoreApplication.translate("Dialog", u"\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u043d\u044b\u0439 \u043f\u043e\u0440\u0442:", None))
+        self.textMessage.setText("")
         self.pushButton.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
     # retranslateUi
 

@@ -1,8 +1,42 @@
 import sys
 import socket
-from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel
+from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
+from PySide6.QtCore import QThread, Signal
 
 from UDPconnectQT import Ui_Dialog
+
+portNumber = 6868
+
+class UDPReceiverThread(QThread):
+    message_received = Signal(str)
+
+    def __init__(self, port):
+        super().__init__()
+        self.port = port
+        self.running = True
+        self.sock = None
+
+    def run(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind(("", self.port))
+
+        while self.running:
+            try:
+                data, addr = self.sock.recvfrom(1024)
+                message = data.decode()
+                self.message_received.emit(message)
+            except OSError:
+                break
+        
+        if self.sock:
+            self.sock.close()
+
+    def stop(self):
+        self.running = False
+        if self.sock:
+            self.sock.close()
+        self.quit()
+        self.wait()
 
 class UDPSenderApp(QDialog):
     def __init__(self):
@@ -12,17 +46,25 @@ class UDPSenderApp(QDialog):
 
         self.initUI()
 
+        self.rt = UDPReceiverThread(portNumber)
+        self.rt.message_received.connect(self.display_received_message)
+        self.rt.start()
+
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
+
+        ip_address = socket.gethostbyname(socket.gethostname())
+        self.ui.ipInfo.setText(f"Ваш IP адрес: {ip_address}")
+        
+        self.ui.portInfo.setText(f"Ваш порт: {portNumber}")
+
         self.show()
 
     def send_udp_message(self):
-        # Получаем данные из полей ввода
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
-        message = self.ui.lineEdit_3.text()
+        message = self.ui.textMessage.text()
 
-        # Создаем UDP сокет
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
@@ -34,6 +76,14 @@ class UDPSenderApp(QDialog):
         finally:
             # Закрываем сокет
             sock.close()
+    
+    def display_received_message(self, message):
+        self.ui.textBrowser.append(message)
+
+    def closeEvent(self, event):
+        self.rt.stop()
+        self.rt.wait()
+        event.accept()
 
 
 if __name__ == "__main__":
