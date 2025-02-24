@@ -1,11 +1,13 @@
 import sys
 import socket
+import struct
+import random
 from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
 from PySide6.QtCore import QThread, Signal
 
 from UDPconnectQT import Ui_Dialog
 
-portNumber = 6868
+portNumber = 6869
 
 class UDPReceiverThread(QThread):
     message_received = Signal(str)
@@ -81,20 +83,40 @@ class UDPSenderApp(QDialog):
     def send_bin_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
-        
-        # Пример данных: 4-байтовые бинарные данные и три числа uint32
-        bin_data = (1).to_bytes(4, 'big')  # Пример 4-байтовых бинарных данных
-        uint32_data = (123456, 789012, 345678)  # Пример чисел uint32
 
-        # Преобразуем данные в байты
-        message = bin_data + b''.join(x.to_bytes(4, 'big') for x in uint32_data)
+        k = 5
+
+        message = b''
+
+        uint8_val = random.randint(0, 255)
+        uint16_val = random.randint(0, 65535)
+        uint32_val1 = random.randint(0, 4294967295)
+        uint32_val2 = random.randint(0, 4294967295)
+
+        message += struct.pack('!B', uint8_val)
+        message += struct.pack('!H', uint16_val) 
+        message += struct.pack('!I', uint32_val1)
+        message += struct.pack('!I', uint32_val2)
+
+        for _ in range(k):
+            uint32_loop = random.randint(0, 4294967295)
+            uint64_loop1 = random.randint(0, 18446744073709551615)
+            uint64_loop2 = random.randint(0, 18446744073709551615)
+
+            message += struct.pack('!I', uint32_loop) 
+            message += struct.pack('!Q', uint64_loop1)
+            message += struct.pack('!Q', uint64_loop2)
+
+            for _ in range(9):
+                uint32_inner = random.randint(0, 4294967295)
+                message += struct.pack('!I', uint32_inner)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
             # Отправляем сообщение
             sock.sendto(message, (ip, port))
-            print(f"Сообщение отправлено на {ip}:{port} в формате bin32 и uint32")
+            print(f"Сообщение отправлено на {ip}:{port} bytes")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
