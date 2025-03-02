@@ -1,11 +1,15 @@
 import sys
 import socket
-from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
+import random
+import json
+import datetime
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
 from PySide6.QtCore import QThread, Signal
 
-from UDPconnectQT import Ui_Dialog
+from QTmain import Ui_MainWindow
 
-portNumber = 6868
+PORT_NUMBER = 6869
+
 
 class UDPReceiverThread(QThread):
     message_received = Signal(str)
@@ -38,26 +42,36 @@ class UDPReceiverThread(QThread):
         self.quit()
         self.wait()
 
-class UDPSenderApp(QDialog):
+
+class UDPSenderApp(QMainWindow):
     def __init__(self):
         super(UDPSenderApp, self).__init__()
-        self.ui = Ui_Dialog()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.initUI()
 
-        self.rt = UDPReceiverThread(portNumber)
+        self.rt = UDPReceiverThread(PORT_NUMBER)
         self.rt.message_received.connect(self.display_received_message)
         self.rt.start()
 
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
         self.ui.pushButton_2.clicked.connect(self.send_bin_message)
+        self.ui.action_save.triggered.connect(self.save_to_json)
+        self.ui.action_exit.triggered.connect(self.exit_application)
+        self.ui.action_about.triggered.connect(self.show_about_dialog)
+
+        with open("config.json", "r") as json_file:
+            config_data = json.load(json_file)
+
+        self.ui.ipConfig.setText(config_data["ip_config"])
+        self.ui.portConfig.setText(str(config_data["port_config"]))
+        self.ui.k_value.setValue(config_data["k_data"])
 
         ip_address = socket.gethostbyname(socket.gethostname())
-        self.ui.ipInfo.setText(f"Ваш IP адрес: {ip_address}")
-        
-        self.ui.portInfo.setText(f"Ваш порт: {portNumber}")
+        self.ui.ipInfo.setText(f"Ваш IP адрес: {ip_address}")        
+        self.ui.portInfo.setText(f"Ваш порт: {PORT_NUMBER}")
 
         self.show()
 
@@ -69,45 +83,71 @@ class UDPSenderApp(QDialog):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
-            # Отправляем сообщение
             sock.sendto(message.encode(), (ip, port))
             print(f"Сообщение отправлено на {ip}:{port}")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
-            # Закрываем сокет
             sock.close()
     
     def send_bin_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
-        
-        # Пример данных: 4-байтовые бинарные данные и три числа uint32
-        bin_data = (1).to_bytes(4, 'big')  # Пример 4-байтовых бинарных данных
-        uint32_data = (123456, 789012, 345678)  # Пример чисел uint32
+        k = self.ui.k_value.value()
 
-        # Преобразуем данные в байты
-        message = bin_data + b''.join(x.to_bytes(4, 'big') for x in uint32_data)
+        # Генерация случайных значений
+        uint8_data = random.randint(0, 255)
+        uint16_data = random.randint(0, 65535)
+        uint32_data_1 = random.randint(0, 4294967295)
+        uint32_data_2 = random.randint(0, 4294967295)
+        uint32_data_list = [random.randint(0, 4294967295) for _ in range(10)]
+
+        message = (
+            uint8_data.to_bytes(1, 'big') +
+            uint16_data.to_bytes(2, 'big') +
+            uint32_data_1.to_bytes(4, 'big') +
+            uint32_data_2.to_bytes(4, 'big')
+        )
+        # Добавляем последние 10 uint32 k раз
+        for _ in range(k):
+            message += b''.join(x.to_bytes(4, 'big') for x in uint32_data_list)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
-            # Отправляем сообщение
             sock.sendto(message, (ip, port))
-            print(f"Сообщение отправлено на {ip}:{port} в формате bin32 и uint32")
+            print(f"Сообщение отправлено на {ip}:{port} ({k} повторений)")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
-            # Закрываем сокет
             sock.close()
+
+    def save_to_json(self):
+        config_data = {
+            "ip_config": self.ui.ipConfig.text(),
+            "port_config": int(self.ui.portConfig.text()),
+            "k_data": self.ui.k_value.value()
+        }
+
+        with open("config.json", "w") as json_file:
+            json.dump(config_data, json_file, indent=4)
+
+        print("Настройки сохранены в config.json")
     
     def display_received_message(self, message):
-        self.ui.textBrowser.append(message)
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        self.ui.textBrowser.append(f"[{current_time}] {message}")
 
     def closeEvent(self, event):
         self.rt.stop()
         self.rt.wait()
         event.accept()
+
+    def show_about_dialog(self):
+        QMessageBox.about(self, "О программе", "Разработано отделом 32451 для проверки работоспособности микрокомпьютера ЭЛВИС САЛЮТ по протоколу передачи данных по UDP.")
+
+    def exit_application(self):
+        self.close()
 
 
 if __name__ == "__main__":
