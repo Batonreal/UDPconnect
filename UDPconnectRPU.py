@@ -1,13 +1,15 @@
 import sys
 import socket
-from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
+import random
+import json
+import datetime
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
 from PySide6.QtCore import QThread, Signal
 
 from QTmain import Ui_MainWindow
 
 PORT_NUMBER = 6869
 
-portNumber = 6868
 
 class UDPReceiverThread(QThread):
     message_received = Signal(str)
@@ -91,19 +93,30 @@ class UDPSenderApp(QMainWindow):
     def send_bin_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
-        
-        # Пример данных: 4-байтовые бинарные данные и три числа uint32
-        bin_data = (1).to_bytes(4, 'big')  # Пример 4-байтовых бинарных данных
-        uint32_data = (123456, 789012, 345678)  # Пример чисел uint32
+        k = self.ui.k_value.value()
 
-        # Преобразуем данные в байты
-        message = bin_data + b''.join(x.to_bytes(4, 'big') for x in uint32_data)
+        # Генерация случайных значений
+        uint8_data = random.randint(0, 255)
+        uint16_data = random.randint(0, 65535)
+        uint32_data_1 = random.randint(0, 4294967295)
+        uint32_data_2 = random.randint(0, 4294967295)
+        uint32_data_list = [random.randint(0, 4294967295) for _ in range(10)]
+
+        message = (
+            uint8_data.to_bytes(1, 'big') +
+            uint16_data.to_bytes(2, 'big') +
+            uint32_data_1.to_bytes(4, 'big') +
+            uint32_data_2.to_bytes(4, 'big')
+        )
+        # Добавляем последние 10 uint32 k раз
+        for _ in range(k):
+            message += b''.join(x.to_bytes(4, 'big') for x in uint32_data_list)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
             sock.sendto(message, (ip, port))
-            print(f"Сообщение отправлено на {ip}:{port} в формате bin32 и uint32")
+            print(f"Сообщение отправлено на {ip}:{port} ({k} повторений)")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
