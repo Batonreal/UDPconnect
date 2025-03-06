@@ -1,5 +1,6 @@
 import sys
 import socket
+import struct
 import random
 import json
 import datetime
@@ -79,11 +80,13 @@ class UDPSenderApp(QMainWindow):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
         message = self.ui.textMessage.text()
-
+    
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
+    
         try:
-            sock.sendto(message.encode(), (ip, port))
+            message_bytes = struct.pack("B", 255) + message.encode()
+    
+            sock.sendto(message_bytes, (ip, port))
             print(f"Сообщение отправлено на {ip}:{port}")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
@@ -95,22 +98,35 @@ class UDPSenderApp(QMainWindow):
         port = int(self.ui.portConfig.text())
         k = self.ui.k_value.value()
 
-        # Генерация случайных значений
-        uint8_data = random.randint(0, 255)
-        uint16_data = random.randint(0, 65535)
-        uint32_data_1 = random.randint(0, 4294967295)
-        uint32_data_2 = random.randint(0, 4294967295)
-        uint32_data_list = [random.randint(0, 4294967295) for _ in range(10)]
+        message = b''
 
-        message = (
-            uint8_data.to_bytes(1, 'big') +
-            uint16_data.to_bytes(2, 'big') +
-            uint32_data_1.to_bytes(4, 'big') +
-            uint32_data_2.to_bytes(4, 'big')
-        )
-        # Добавляем последние 10 uint32 k раз
+        uint8_val = random.randint(0, 255)
+        uint16_val = random.randint(0, 65535)
+        uint32_val1 = random.randint(0, 4294967295)
+        uint32_val2 = random.randint(0, 4294967295)
+
+        message += struct.pack('!B', uint8_val)
+        message += struct.pack('!H', uint16_val) 
+        message += struct.pack('!I', uint32_val1)
+        message += struct.pack('!I', uint32_val2)
+
         for _ in range(k):
-            message += b''.join(x.to_bytes(4, 'big') for x in uint32_data_list)
+            uint32_loop = random.randint(0, 4294967295)
+
+            message += struct.pack('!I', uint32_loop) 
+
+            for _ in range(10):
+                uint32_inner = random.randint(0, 4294967295)
+                message += struct.pack('!I', uint32_inner)
+
+        # for _ in range(k):
+        #     uint32_loop = 3333
+
+        #     message += struct.pack('!I', uint32_loop) 
+
+        #     for _ in range(10):
+        #         uint32_inner = 1234
+        #         message += struct.pack('!I', uint32_inner)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
