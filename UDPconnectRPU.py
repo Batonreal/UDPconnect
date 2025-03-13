@@ -56,6 +56,8 @@ class UDPSenderApp(QMainWindow):
         self.rt.message_received.connect(self.display_received_message)
         self.rt.start()
 
+        self.uint8_packet_id = 0  # Initialize packet ID
+
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
         self.ui.pushButton_2.clicked.connect(self.send_bin_message)
@@ -112,22 +114,18 @@ class UDPSenderApp(QMainWindow):
 
         for _ in range(k):
             uint32_loop = random.randint(0, 4294967295)
-
+            
+            message += struct.pack('!B', self.uint8_packet_id)
             message += struct.pack('!I', uint32_loop) 
 
             for _ in range(10):
                 uint32_inner = random.randint(0, 4294967295)
                 message += struct.pack('!I', uint32_inner)
 
-        # for _ in range(k):
-        #     uint32_loop = 3333
+            self.uint8_packet_id = (self.uint8_packet_id + 1) % 256
 
-        #     message += struct.pack('!I', uint32_loop) 
-
-        #     for _ in range(10):
-        #         uint32_inner = 1234
-        #         message += struct.pack('!I', uint32_inner)
-
+        self.uint8_packet_id = self.uint8_packet_id - 3
+        
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
