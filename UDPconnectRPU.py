@@ -102,30 +102,46 @@ class UDPSenderApp(QMainWindow):
 
         message = b''
 
-        uint8_val = random.randint(0, 255)
+        uint8_val = 3
         uint16_val = random.randint(0, 65535)
         uint32_val1 = random.randint(0, 4294967295)
         uint32_val2 = random.randint(0, 4294967295)
 
         message += struct.pack('!B', uint8_val)
-        message += struct.pack('!H', uint16_val) 
+        message += struct.pack('!H', uint16_val)
         message += struct.pack('!I', uint32_val1)
         message += struct.pack('!I', uint32_val2)
 
         for _ in range(k):
             uint32_loop = random.randint(0, 4294967295)
-            
-            message += struct.pack('!B', self.uint8_packet_id)
-            message += struct.pack('!I', uint32_loop) 
 
-            for _ in range(10):
-                uint32_inner = random.randint(0, 4294967295)
-                message += struct.pack('!I', uint32_inner)
+            message += struct.pack('!B', self.uint8_packet_id)
+            message += struct.pack('!I', uint32_loop)
+
+            impulse_ns_1 = random.randint(0, 10000000)
+            impulse_ns_2 = random.randint(0, 10000)
+            impulse_ns_3 = random.randint(0, 10000)
+            impulse_ns_4 = random.randint(0, 10000)
+            impulse_ns_5 = random.randint(0, 10000)
+            impulse_ns_6 = random.randint(0, 10000)
+            impulse_ns_7 = random.randint(0, 10000)
+            impulse_ns_8 = random.randint(0, 10000)
+            impulse_ns_9 = random.randint(0, 10000)
+            impulse_ns_10 = random.randint(0, 10000)
+
+            message += struct.pack('!I', impulse_ns_1)
+            message += struct.pack('!I', impulse_ns_2)
+            message += struct.pack('!I', impulse_ns_3)
+            message += struct.pack('!I', impulse_ns_4)
+            message += struct.pack('!I', impulse_ns_5)
+            message += struct.pack('!I', impulse_ns_6)
+            message += struct.pack('!I', impulse_ns_7)
+            message += struct.pack('!I', impulse_ns_8)
+            message += struct.pack('!I', impulse_ns_9)
+            message += struct.pack('!I', impulse_ns_10)
 
             self.uint8_packet_id = (self.uint8_packet_id + 1) % 256
 
-        self.uint8_packet_id = self.uint8_packet_id - 3
-        
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
