@@ -258,6 +258,52 @@ background-color: rgba(0, 0, 0, 80);
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>96</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushAmplitude">
+          <property name="font">
+           <font>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+color: black;
+background-color: rgba(0, 0, 0, 40);
+border: 2px solid rgba(0, 0, 0, 50);
+}
+QPushButton:hover {
+background-color: rgba(0, 0, 0, 50);
+}
+
+QPushButton:pressed {
+background-color: rgba(0, 0, 0, 80);
+}</string>
+          </property>
+          <property name="text">
+           <string>Отправить амплитуду</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </item>
    </layout>
@@ -268,7 +314,7 @@ background-color: rgba(0, 0, 0, 80);
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>33</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="maximumSize">

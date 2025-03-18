@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'QTmain.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.8.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         self.k_value.setMaximumSize(QSize(90, 16777215))
         self.k_value.setFont(font1)
         self.k_value.setStyleSheet(u"")
-        self.k_value.setValue(5)
+        self.k_value.setValue(1)
 
         self.horizontalLayout_5.addWidget(self.k_value)
 
@@ -177,13 +177,40 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalSpacer = QSpacerItem(96, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_6.addItem(self.horizontalSpacer)
+
+        self.pushAmplitude = QPushButton(self.centralwidget)
+        self.pushAmplitude.setObjectName(u"pushAmplitude")
+        self.pushAmplitude.setFont(font3)
+        self.pushAmplitude.setStyleSheet(u"QPushButton {\n"
+"color: black;\n"
+"background-color: rgba(0, 0, 0, 40);\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
+"}\n"
+"QPushButton:hover {\n"
+"background-color: rgba(0, 0, 0, 50);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"background-color: rgba(0, 0, 0, 80);\n"
+"}")
+
+        self.horizontalLayout_6.addWidget(self.pushAmplitude)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_6)
+
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 500, 33))
+        self.menubar.setGeometry(QRect(0, 0, 500, 24))
         self.menubar.setMaximumSize(QSize(16777215, 40))
         font4 = QFont()
         font4.setPointSize(10)
@@ -234,6 +261,7 @@ class Ui_MainWindow(object):
         self.textMessage.setText("")
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0431\u0430\u0439\u0442\u044b", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
+        self.pushAmplitude.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0430\u043c\u043f\u043b\u0438\u0442\u0443\u0434\u0443", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043f\u0440\u0430\u0432\u043a\u0430", None))
     # retranslateUi

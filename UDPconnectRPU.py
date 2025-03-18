@@ -64,6 +64,7 @@ class UDPSenderApp(QMainWindow):
         self.ui.action_save.triggered.connect(self.save_to_json)
         self.ui.action_exit.triggered.connect(self.exit_application)
         self.ui.action_about.triggered.connect(self.show_about_dialog)
+        self.ui.pushAmplitude.clicked.connect(self.send_amplitude_message)
 
         with open("config.json", "r") as json_file:
             config_data = json.load(json_file)
@@ -142,6 +143,8 @@ class UDPSenderApp(QMainWindow):
 
             self.uint8_packet_id = (self.uint8_packet_id + 1) % 256
 
+        self.uint8_packet_id = self.uint8_packet_id - 3
+
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
@@ -149,6 +152,41 @@ class UDPSenderApp(QMainWindow):
             print(f"Сообщение отправлено на {ip}:{port} ({k} повторений)")
         except Exception as e:
             print(f"Ошибка при отправке сообщения: {e}")
+        finally:
+            sock.close()
+
+    def send_amplitude_message(self):
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+
+        message = b''
+
+        # Generate random values for each field
+        uint8_val = 5
+        uint16_val = random.randint(0, 65535)
+        uint32_val1 = random.randint(0, 4294967295)
+        uint32_val2 = random.randint(0, 4294967295)
+        uint8_val2 = random.randint(0, 255)
+        uint128_val = random.getrandbits(128)  # Generate a 128-bit random number
+        uint32_val3 = random.randint(0, 4294967295)
+
+        # Pack the values into the message
+        message += struct.pack('!B', uint8_val)
+        message += struct.pack('!H', uint16_val)
+        message += struct.pack('!I', uint32_val1)
+        message += struct.pack('!I', uint32_val2)
+        message += struct.pack('!B', uint8_val2)
+        message += uint128_val.to_bytes(16, byteorder='big')  # Convert 128-bit number to bytes
+        message += struct.pack('!I', uint32_val3)
+
+        # Send the message via UDP
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        try:
+            sock.sendto(message, (ip, port))
+            print(f"Amplitude message sent to {ip}:{port}")
+        except Exception as e:
+            print(f"Error sending amplitude message: {e}")
         finally:
             sock.close()
 
