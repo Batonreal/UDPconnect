@@ -56,8 +56,6 @@ class UDPSenderApp(QMainWindow):
         self.rt.message_received.connect(self.display_received_message)
         self.rt.start()
 
-        self.uint8_packet_id = 0  # Initialize packet ID
-
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
         self.ui.pushButton_2.clicked.connect(self.send_bin_message)
@@ -105,21 +103,24 @@ class UDPSenderApp(QMainWindow):
 
         uint8_val = 3
         uint16_val = random.randint(0, 65535)
-        uint32_val1 = random.randint(0, 4294967295)
+
+        # Placeholder for checksum (4 bytes)
+        checksum_placeholder = b'\x00\x00\x00\x00'
+
         uint32_val2 = random.randint(0, 4294967295)
 
+        # Pack initial values
         message += struct.pack('!B', uint8_val)
         message += struct.pack('!H', uint16_val)
-        message += struct.pack('!I', uint32_val1)
+        message += checksum_placeholder
         message += struct.pack('!I', uint32_val2)
 
         for _ in range(k):
             uint32_loop = random.randint(0, 4294967295)
 
-            message += struct.pack('!B', self.uint8_packet_id)
             message += struct.pack('!I', uint32_loop)
 
-            impulse_ns_1 = random.randint(0, 10000000)
+            impulse_ns_1 = random.randint(0, 1000000)
             impulse_ns_2 = random.randint(0, 10000)
             impulse_ns_3 = random.randint(0, 10000)
             impulse_ns_4 = random.randint(0, 10000)
@@ -141,9 +142,16 @@ class UDPSenderApp(QMainWindow):
             message += struct.pack('!I', impulse_ns_9)
             message += struct.pack('!I', impulse_ns_10)
 
-            self.uint8_packet_id = (self.uint8_packet_id + 1) % 256
+        # Calculate checksum
+        data_for_checksum = message[:3] + message[7:]
+        print(len(data_for_checksum))
+        checksum = self.calculate_crc32(data_for_checksum)
+        print(struct.pack('!I', checksum))
+        print(f"Сообщение длиной {len(message)} байт: {message}")
 
-        self.uint8_packet_id = self.uint8_packet_id - 3
+        # Insert checksum into the message
+        message = message[:3] + struct.pack('!I', checksum) + message[7:]
+        print(f"Сообщение длиной {len(message)} байт: {message}")
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -154,6 +162,18 @@ class UDPSenderApp(QMainWindow):
             print(f"Ошибка при отправке сообщения: {e}")
         finally:
             sock.close()
+
+    def calculate_crc32(self, data):
+        crc = 0xFFFFFFFF
+        polinomial = 0xEDB88320
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 1:
+                    crc = (crc >> 1) ^ polinomial
+                else:
+                    crc >>= 1
+        return crc ^ 0xFFFFFFFF
 
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
