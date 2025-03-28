@@ -163,18 +163,6 @@ class UDPSenderApp(QMainWindow):
         finally:
             sock.close()
 
-    def calculate_crc32(self, data):
-        crc = 0xFFFFFFFF
-        polinomial = 0xEDB88320
-        for byte in data:
-            crc ^= byte
-            for _ in range(8):
-                if crc & 1:
-                    crc = (crc >> 1) ^ polinomial
-                else:
-                    crc >>= 1
-        return crc ^ 0xFFFFFFFF
-
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
@@ -184,20 +172,30 @@ class UDPSenderApp(QMainWindow):
         # Generate random values for each field
         uint8_val = 5
         uint16_val = random.randint(0, 65535)
-        uint32_val1 = random.randint(0, 4294967295)
+        checksum_placeholder = b'\x00\x00\x00\x00'
         uint32_val2 = random.randint(0, 4294967295)
-        uint8_val2 = random.randint(0, 255)
-        uint128_val = random.getrandbits(128)  # Generate a 128-bit random number
-        uint32_val3 = random.randint(0, 4294967295)
+        uint8_val2 = 0x80
 
         # Pack the values into the message
         message += struct.pack('!B', uint8_val)
         message += struct.pack('!H', uint16_val)
-        message += struct.pack('!I', uint32_val1)
+        message += checksum_placeholder
         message += struct.pack('!I', uint32_val2)
         message += struct.pack('!B', uint8_val2)
-        message += uint128_val.to_bytes(16, byteorder='big')  # Convert 128-bit number to bytes
-        message += struct.pack('!I', uint32_val3)
+
+        for _ in range(64):
+            uint8_loop = random.randint(0, 16)
+            message += struct.pack('!B', uint8_loop)
+
+        data_for_checksum = message[:3] + message[7:]
+        print(len(data_for_checksum))
+        checksum = self.calculate_crc32(data_for_checksum)
+        print(struct.pack('!I', checksum))
+        print(f"Сообщение длиной {len(message)} байт: {message}")
+
+        # Insert checksum into the message
+        message = message[:3] + struct.pack('!I', checksum) + message[7:]
+        print(f"Сообщение длиной {len(message)} байт: {message}")
 
         # Send the message via UDP
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -221,6 +219,18 @@ class UDPSenderApp(QMainWindow):
             json.dump(config_data, json_file, indent=4)
 
         print("Настройки сохранены в config.json")
+        
+    def calculate_crc32(self, data):
+        crc = 0xFFFFFFFF
+        polinomial = 0xEDB88320
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 1:
+                    crc = (crc >> 1) ^ polinomial
+                else:
+                    crc >>= 1
+        return crc ^ 0xFFFFFFFF
     
     def display_received_message(self, message):
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
