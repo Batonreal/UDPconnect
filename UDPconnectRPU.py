@@ -183,9 +183,20 @@ class UDPSenderApp(QMainWindow):
         message += struct.pack('!I', uint32_val2)
         message += struct.pack('!B', uint8_val2)
 
-        for _ in range(64):
+        message += struct.pack('!B', 3)
+        message += struct.pack('!B', 4)
+        message += struct.pack('!B', 2)
+        message += struct.pack('!B', 1)
+        message += struct.pack('!B', 0)
+        message += struct.pack('!B', 0)
+
+        for _ in range(28):
             uint8_loop = random.randint(0, 16)
             message += struct.pack('!B', uint8_loop)
+            message += struct.pack('!B', uint8_loop)
+        
+        message += struct.pack('!B', 3)
+        message += struct.pack('!B', 3)
 
         data_for_checksum = message[:3] + message[7:]
         print(len(data_for_checksum))
