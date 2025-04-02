@@ -4,6 +4,7 @@ import struct
 import random
 import json
 import datetime
+import os
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
 from PySide6.QtCore import QThread, Signal
 
@@ -64,7 +65,19 @@ class UDPSenderApp(QMainWindow):
         self.ui.action_about.triggered.connect(self.show_about_dialog)
         self.ui.pushAmplitude.clicked.connect(self.send_amplitude_message)
 
-        with open("config.json", "r") as json_file:
+        config_file = "config.json"
+        default_config = {
+            "ip_config": "192.168.0.15",
+            "port_config": 6868,
+            "k_data": 5
+        }
+
+        if not os.path.exists(config_file):
+            with open(config_file, "w") as json_file:
+                json.dump(default_config, json_file, indent=4)
+            print(f"Файл {config_file} создан с настройками по умолчанию.")
+
+        with open(config_file, "r") as json_file:
             config_data = json.load(json_file)
 
         self.ui.ipConfig.setText(config_data["ip_config"])
