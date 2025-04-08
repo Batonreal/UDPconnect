@@ -5,7 +5,7 @@ import random
 import json
 import datetime
 import os
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextBrowser
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide6.QtCore import QThread, Signal
 
 from QTmain import Ui_MainWindow
@@ -28,9 +28,10 @@ class UDPReceiverThread(QThread):
 
         while self.running:
             try:
-                data, addr = self.sock.recvfrom(1024)
-                message = data.decode()
-                self.message_received.emit(message)
+                data, addr = self.sock.recvfrom(1024)  
+                uint8_values = [f"{byte:02X}" for byte in data]
+                message = " ".join(uint8_values)
+                self.message_received.emit(message) 
             except OSError:
                 break
         
