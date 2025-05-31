@@ -6,7 +6,7 @@ import json
 import datetime
 import os
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QThread, Signal, QTimer
 
 from QTmain import Ui_MainWindow
 
@@ -58,6 +58,12 @@ class UDPSenderApp(QMainWindow):
         self.rt.message_received.connect(self.display_received_message)
         self.rt.start()
 
+        # --- Добавлено для time_data ---
+        self.time_data_timer = QTimer(self)
+        self.time_data_timer.timeout.connect(self.send_saved_data_message)
+        self.time_data_active = False
+        # ------------------------------
+
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
         self.ui.pushButton_2.clicked.connect(self.send_bin_message)
@@ -65,6 +71,7 @@ class UDPSenderApp(QMainWindow):
         self.ui.action_exit.triggered.connect(self.exit_application)
         self.ui.action_about.triggered.connect(self.show_about_dialog)
         self.ui.pushAmplitude.clicked.connect(self.send_amplitude_message)
+        self.ui.time_data.clicked.connect(self.toggle_time_data) 
 
         config_file = "config.json"
         default_config = {
@@ -177,6 +184,85 @@ class UDPSenderApp(QMainWindow):
         finally:
             sock.close()
 
+    def send_saved_data_message(self):
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+        k = self.ui.k_value.value()
+
+        message = b''
+
+        uint8_val = 3
+        uint16_val = 11 + k * 44
+
+        # Placeholder for checksum (4 bytes)
+        checksum_placeholder = b'\x00\x00\x00\x00'
+
+        # Формируем Набор фаз по битам:
+        num_impulses = 10  # 0-5 бит
+        impulse_phases = 0b1010101010  # 6-15 бит, можно менять на нужный набор фаз
+        impulse_presence = 0b1111111111  # 16-25 бит, всегда 1
+        reserved = 0  # 26-31 бит
+
+        phases_and_impulses = (
+            (reserved << 26) |
+            (impulse_presence << 16) |
+            (impulse_phases << 6) |
+            num_impulses
+        )
+
+        cyclic_counter = 1
+
+        message += struct.pack('!B', uint8_val)
+        message += struct.pack('!H', uint16_val)
+        message += checksum_placeholder
+        message += struct.pack('!I', cyclic_counter)
+
+        for _ in range(k):
+            message += struct.pack('!I', phases_and_impulses)
+
+            impulse_ns_1 = 1000000
+            impulse_ns_2 = 10000
+            impulse_ns_3 = 10000
+            impulse_ns_4 = 10000
+            impulse_ns_5 = 10000
+            impulse_ns_6 = 10000
+            impulse_ns_7 = 10000
+            impulse_ns_8 = 10000
+            impulse_ns_9 = 10000
+            impulse_ns_10 = 10000
+
+            message += struct.pack('!I', impulse_ns_1)
+            message += struct.pack('!I', impulse_ns_2)
+            message += struct.pack('!I', impulse_ns_3)
+            message += struct.pack('!I', impulse_ns_4)
+            message += struct.pack('!I', impulse_ns_5)
+            message += struct.pack('!I', impulse_ns_6)
+            message += struct.pack('!I', impulse_ns_7)
+            message += struct.pack('!I', impulse_ns_8)
+            message += struct.pack('!I', impulse_ns_9)
+            message += struct.pack('!I', impulse_ns_10)
+
+        # Calculate checksum
+        data_for_checksum = message[:3] + message[7:]
+        print(len(data_for_checksum))
+        checksum = self.calculate_crc32(data_for_checksum)
+        print(struct.pack('!I', checksum))
+        print(f"Сообщение длиной {len(message)} байт: {message}")
+
+        # Insert checksum into the message
+        message = message[:3] + struct.pack('!I', checksum) + message[7:]
+        print(f"Сообщение длиной {len(message)} байт: {message}")
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        try:
+            sock.sendto(message, (ip, port))
+            print(f"Сообщение отправлено на {ip}:{port} ({k} повторений)")
+        except Exception as e:
+            print(f"Ошибка при отправке сообщения: {e}")
+        finally:
+            sock.close()
+
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
@@ -248,6 +334,7 @@ class UDPSenderApp(QMainWindow):
     def calculate_crc32(self, data):
         crc = 0xFFFFFFFF
         polinomial = 0xEDB88320
+        # polinomial = 0x11111111 # fake polynomial for testing
         for byte in data:
             crc ^= byte
             for _ in range(8):
@@ -271,6 +358,18 @@ class UDPSenderApp(QMainWindow):
 
     def exit_application(self):
         self.close()
+
+    def toggle_time_data(self):
+        if not self.time_data_active:
+            self.time_data_timer.start(1000)  # 1 секунда
+            self.time_data_active = True
+            print("Периодическая отправка данных запущена")
+            self.ui.time_data.setText("Остановить отправку")
+        else:
+            self.time_data_timer.stop()
+            self.time_data_active = False
+            print("Периодическая отправка данных остановлена")
+            self.ui.time_data.setText("Фазы и временные данные")
 
 
 if __name__ == "__main__":

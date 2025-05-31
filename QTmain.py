@@ -25,9 +25,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(500, 420)
-        MainWindow.setMinimumSize(QSize(500, 420))
-        MainWindow.setMaximumSize(QSize(500, 420))
+        MainWindow.resize(500, 440)
+        MainWindow.setMinimumSize(QSize(500, 440))
+        MainWindow.setMaximumSize(QSize(500, 440))
         self.action_save = QAction(MainWindow)
         self.action_save.setObjectName(u"action_save")
         self.action_exit = QAction(MainWindow)
@@ -204,6 +204,24 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_6)
 
+        self.time_data = QPushButton(self.centralwidget)
+        self.time_data.setObjectName(u"time_data")
+        self.time_data.setFont(font3)
+        self.time_data.setStyleSheet(u"QPushButton {\n"
+"color: black;\n"
+"background-color: rgba(0, 0, 0, 40);\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
+"}\n"
+"QPushButton:hover {\n"
+"background-color: rgba(0, 0, 0, 50);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"background-color: rgba(0, 0, 0, 80);\n"
+"}")
+
+        self.verticalLayout.addWidget(self.time_data)
+
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
 
@@ -262,6 +280,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0431\u0430\u0439\u0442\u044b", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
         self.pushAmplitude.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0430\u043c\u043f\u043b\u0438\u0442\u0443\u0434\u0443", None))
+        self.time_data.setText(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0437\u044b \u0438 \u0432\u0440\u0435\u043c\u0435\u043d\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043f\u0440\u0430\u0432\u043a\u0430", None))
     # retranslateUi
