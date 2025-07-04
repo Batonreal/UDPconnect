@@ -5,6 +5,7 @@ import random
 import json
 import datetime
 import os
+import time
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide6.QtCore import QThread, Signal, QTimer
 
@@ -58,11 +59,10 @@ class UDPSenderApp(QMainWindow):
         self.rt.message_received.connect(self.display_received_message)
         self.rt.start()
 
-        # --- Добавлено для time_data ---
         self.time_data_timer = QTimer(self)
-        self.time_data_timer.timeout.connect(self.send_saved_data_message)
+        self.time_data_timer.timeout.connect(self.precise_send_saved_data_message)
         self.time_data_active = False
-        # ------------------------------
+        self.next_send_time = None
 
     def initUI(self):
         self.ui.pushButton.clicked.connect(self.send_udp_message)
@@ -199,8 +199,8 @@ class UDPSenderApp(QMainWindow):
 
         # Формируем Набор фаз по битам:
         num_impulses = 10  # 0-5 бит
-        impulse_phases = 0b1010101010  # 6-15 бит, можно менять на нужный набор фаз
-        impulse_presence = 0b1111111111  # 16-25 бит, всегда 1
+        impulse_phases = 0b0000000000  # читать справа налево, 0-9 биты
+        impulse_presence = 0b0111111111
         reserved = 0  # 26-31 бит
 
         phases_and_impulses = (
@@ -217,19 +217,22 @@ class UDPSenderApp(QMainWindow):
         message += checksum_placeholder
         message += struct.pack('!I', cyclic_counter)
 
-        for _ in range(k):
+        for i in range(k):
             message += struct.pack('!I', phases_and_impulses)
 
-            impulse_ns_1 = 1000000
-            impulse_ns_2 = 10000
-            impulse_ns_3 = 10000
-            impulse_ns_4 = 10000
-            impulse_ns_5 = 10000
-            impulse_ns_6 = 10000
-            impulse_ns_7 = 10000
-            impulse_ns_8 = 10000
-            impulse_ns_9 = 10000
-            impulse_ns_10 = 10000
+            if i == 0:
+                impulse_ns_1 = 0
+            else:
+                impulse_ns_1 = 318000000
+            impulse_ns_2 = 10000000
+            impulse_ns_3 = 10000000
+            impulse_ns_4 = 10000000
+            impulse_ns_5 = 10000000
+            impulse_ns_6 = 10000000
+            impulse_ns_7 = 10000000
+            impulse_ns_8 = 10000000
+            impulse_ns_9 = 12000000
+            impulse_ns_10 = 0
 
             message += struct.pack('!I', impulse_ns_1)
             message += struct.pack('!I', impulse_ns_2)
@@ -263,20 +266,21 @@ class UDPSenderApp(QMainWindow):
         finally:
             sock.close()
 
+        current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        self.ui.textBrowser.append(f"[{current_time}] Сообщение отправлено на {ip}:{port} ({k} повторений)")
+
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
 
         message = b''
 
-        # Generate random values for each field
         uint8_val = 5
         uint16_val = random.randint(0, 65535)
         checksum_placeholder = b'\x00\x00\x00\x00'
         uint32_val2 = random.randint(0, 4294967295)
         uint8_val2 = 0x80
 
-        # Pack the values into the message
         message += struct.pack('!B', uint8_val)
         message += struct.pack('!H', uint16_val)
         message += checksum_placeholder
@@ -345,7 +349,7 @@ class UDPSenderApp(QMainWindow):
         return crc ^ 0xFFFFFFFF
     
     def display_received_message(self, message):
-        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
         self.ui.textBrowser.append(f"[{current_time}] {message}")
 
     def closeEvent(self, event):
@@ -361,15 +365,27 @@ class UDPSenderApp(QMainWindow):
 
     def toggle_time_data(self):
         if not self.time_data_active:
-            self.time_data_timer.start(1000)  # 1 секунда
             self.time_data_active = True
+            self.next_send_time = time.perf_counter()
             print("Периодическая отправка данных запущена")
             self.ui.time_data.setText("Остановить отправку")
+            self.precise_send_saved_data_message()
         else:
-            self.time_data_timer.stop()
             self.time_data_active = False
             print("Периодическая отправка данных остановлена")
             self.ui.time_data.setText("Фазы и временные данные")
+
+    def precise_send_saved_data_message(self):
+        if not self.time_data_active:
+            return
+        self.send_saved_data_message()
+        now = time.perf_counter()
+        if self.next_send_time is None:
+            self.next_send_time = now + 1.0
+        else:
+            self.next_send_time += 1.0
+        delay = max(0, self.next_send_time - time.perf_counter())
+        QTimer.singleShot(round(delay * 1000), self.precise_send_saved_data_message)
 
 
 if __name__ == "__main__":
