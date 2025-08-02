@@ -11,7 +11,7 @@ from PySide6.QtCore import QThread, Signal, QTimer
 
 from QTmain import Ui_MainWindow
 
-PORT_NUMBER = 6869
+PORT_NUMBER = 19002
 
 
 class UDPReceiverThread(QThread):
@@ -214,7 +214,7 @@ class UDPSenderApp(QMainWindow):
 
         # Формируем Набор фаз по битам:
         num_impulses = 10  # 0-5 бит
-        impulse_phases = 0b0000000000  # читать справа налево, 0-9 биты
+        impulse_phases = 0b1111100000  # читать справа налево, 0-9 биты
         impulse_presence = 0b0111111111
         reserved = 0  # 26-31 бит
 
@@ -237,13 +237,13 @@ class UDPSenderApp(QMainWindow):
             message += struct.pack('!I', phases_and_impulses)
 
             if i == 0:
-                impulse_ns_1 = 0
+                impulse_ns_1 = 900
             else:
                 impulse_ns_1 = 318000000
             impulse_ns_2 = 10000000
+            impulse_ns_5 = 10000000
             impulse_ns_3 = 10000000
             impulse_ns_4 = 10000000
-            impulse_ns_5 = 10000000
             impulse_ns_6 = 10000000
             impulse_ns_7 = 10000000
             impulse_ns_8 = 10000000
