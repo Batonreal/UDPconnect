@@ -207,14 +207,14 @@ class UDPSenderApp(QMainWindow):
         message = b''
 
         uint8_val = 3
-        uint16_val = 11 + k * 44
+        uint16_val = 15 + k * 44
 
         # Placeholder for checksum (4 bytes)
         checksum_placeholder = b'\x00\x00\x00\x00'
 
         # Формируем Набор фаз по битам:
         num_impulses = 10  # 0-5 бит
-        impulse_phases = 0b1111100000  # читать справа налево, 0-9 биты
+        impulse_phases = 0b0000000000  # читать справа налево, 0-9 биты
         impulse_presence = 0b0111111111
         reserved = 0  # 26-31 бит
 
@@ -227,17 +227,19 @@ class UDPSenderApp(QMainWindow):
 
         self.cyclic_counter = self.cyclic_counter + 1
         # self.cyclic_counter = 1
+        time_delay = -500
 
         message += struct.pack('!B', uint8_val)
         message += struct.pack('!H', uint16_val)
         message += checksum_placeholder
         message += struct.pack('!I', self.cyclic_counter)
+        message += struct.pack('!i', time_delay)
 
         for i in range(k):
             message += struct.pack('!I', phases_and_impulses)
 
             if i == 0:
-                impulse_ns_1 = 900
+                impulse_ns_1 = 0
             else:
                 impulse_ns_1 = 318000000
             impulse_ns_2 = 10000000
