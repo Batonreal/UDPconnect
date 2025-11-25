@@ -25,9 +25,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(500, 440)
-        MainWindow.setMinimumSize(QSize(500, 440))
-        MainWindow.setMaximumSize(QSize(500, 440))
+        MainWindow.resize(500, 490)
+        MainWindow.setMinimumSize(QSize(500, 490))
+        MainWindow.setMaximumSize(QSize(500, 490))
         self.action_save = QAction(MainWindow)
         self.action_save.setObjectName(u"action_save")
         self.action_exit = QAction(MainWindow)
@@ -179,7 +179,23 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.horizontalSpacer = QSpacerItem(96, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        self.select_mode = QSpinBox(self.centralwidget)
+        self.select_mode.setObjectName(u"select_mode")
+        self.select_mode.setMaximumSize(QSize(50, 16777215))
+        self.select_mode.setFont(font1)
+        self.select_mode.setMinimum(1)
+        self.select_mode.setMaximum(3)
+
+        self.horizontalLayout_6.addWidget(self.select_mode)
+
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMaximumSize(QSize(50, 16777215))
+        self.label_2.setFont(font1)
+
+        self.horizontalLayout_6.addWidget(self.label_2)
+
+        self.horizontalSpacer = QSpacerItem(180, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer)
 
@@ -222,6 +238,29 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.time_data)
 
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.time_delay_box = QSpinBox(self.centralwidget)
+        self.time_delay_box.setObjectName(u"time_delay_box")
+        self.time_delay_box.setFont(font1)
+        self.time_delay_box.setMinimum(-5000000)
+        self.time_delay_box.setMaximum(5000000)
+
+        self.horizontalLayout_7.addWidget(self.time_delay_box)
+
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        self.label.setMaximumSize(QSize(100, 16777215))
+        font4 = QFont()
+        font4.setPointSize(11)
+        font4.setBold(False)
+        self.label.setFont(font4)
+
+        self.horizontalLayout_7.addWidget(self.label)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
+
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
 
@@ -230,9 +269,9 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 500, 24))
         self.menubar.setMaximumSize(QSize(16777215, 40))
-        font4 = QFont()
-        font4.setPointSize(10)
-        self.menubar.setFont(font4)
+        font5 = QFont()
+        font5.setPointSize(10)
+        self.menubar.setFont(font5)
         self.menubar.setStyleSheet(u"            QMenuBar {\n"
 "                border-bottom: 1px solid rgb(179, 179, 179); /* \u0422\u043e\u043b\u0449\u0438\u043d\u0430, \u0441\u0442\u0438\u043b\u044c \u0438 \u0446\u0432\u0435\u0442 \u043b\u0438\u043d\u0438\u0438 */\n"
 "                background-color: #f0f0f0; /* \u0426\u0432\u0435\u0442 \u0444\u043e\u043d\u0430 (\u043e\u043f\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u043e) */\n"
@@ -279,8 +318,10 @@ class Ui_MainWindow(object):
         self.textMessage.setText("")
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0431\u0430\u0439\u0442\u044b", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"mode", None))
         self.pushAmplitude.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0430\u043c\u043f\u043b\u0438\u0442\u0443\u0434\u0443", None))
         self.time_data.setText(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0437\u044b \u0438 \u0432\u0440\u0435\u043c\u0435\u043d\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u0437\u0430\u0434\u0435\u0440\u0436\u043a\u0430, \u043d\u0441", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043f\u0440\u0430\u0432\u043a\u0430", None))
     # retranslateUi

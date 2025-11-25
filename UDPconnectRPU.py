@@ -77,9 +77,9 @@ class UDPSenderApp(QMainWindow):
 
         config_file = "config.json"
         default_config = {
-            "ip_config": "192.168.0.15",
-            "port_config": 6868,
-            "k_data": 5
+            "ip_config": "192.168.0.56",
+            "port_config": 19001,
+            "k_data": 50
         }
 
         if not os.path.exists(config_file):
@@ -227,7 +227,7 @@ class UDPSenderApp(QMainWindow):
 
         self.cyclic_counter = self.cyclic_counter + 1
         # self.cyclic_counter = 1
-        time_delay = -500
+        time_delay = self.ui.time_delay_box.value() * 10
 
         message += struct.pack('!B', uint8_val)
         message += struct.pack('!H', uint16_val)
@@ -287,11 +287,89 @@ class UDPSenderApp(QMainWindow):
         current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
         self.ui.textBrowser.append(f"[{current_time}] Сообщение отправлено на {ip}:{port} ({k} повторений)")
 
+    def mode_amplitude(self, message, mode):
+        if (mode == 1):
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 11)
+            self.message += struct.pack('!B', 11)
+            self.message += struct.pack('!B', 8)
+            self.message += struct.pack('!B', 8)
+            self.message += struct.pack('!B', 6)
+            self.message += struct.pack('!B', 6)
+            self.message += struct.pack('!B', 4)
+            self.message += struct.pack('!B', 4)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 1)
+            self.message += struct.pack('!B', 1)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            # message += struct.pack('!B', 0)
+            
+            for _ in range(20):
+                uint8_loop = 0
+                self.message += struct.pack('!B', uint8_loop)
+                self.message += struct.pack('!B', uint8_loop)
+
+            # message += struct.pack('!B', 10)
+            # message += struct.pack('!B', 10)
+
+        elif (mode == 2):
+            self.message += struct.pack('!B', 4)
+            self.message += struct.pack('!B', 4)
+            self.message += struct.pack('!B', 13)
+            self.message += struct.pack('!B', 13)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 12)
+            self.message += struct.pack('!B', 12)
+            self.message += struct.pack('!B', 9)
+            self.message += struct.pack('!B', 9)
+            self.message += struct.pack('!B', 7)
+            self.message += struct.pack('!B', 7)
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 3)
+            self.message += struct.pack('!B', 3)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 1)
+            self.message += struct.pack('!B', 1)
+            
+            for _ in range(20):
+                uint8_loop = 0
+                self.message += struct.pack('!B', uint8_loop)
+                self.message += struct.pack('!B', uint8_loop)
+
+        elif (mode == 3):
+            print("Пока не закончено")
+
+
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
 
-        message = b''
+        self.message = b''
 
         uint8_val = 5
         uint16_val = random.randint(0, 65535)
@@ -299,42 +377,29 @@ class UDPSenderApp(QMainWindow):
         uint32_val2 = random.randint(0, 4294967295)
         uint8_val2 = 0x80
 
-        message += struct.pack('!B', uint8_val)
-        message += struct.pack('!H', uint16_val)
-        message += checksum_placeholder
-        message += struct.pack('!I', uint32_val2)
-        message += struct.pack('!B', uint8_val2)
+        self.message += struct.pack('!B', uint8_val)
+        self.message += struct.pack('!H', uint16_val)
+        self.message += checksum_placeholder
+        self.message += struct.pack('!I', uint32_val2)
+        self.message += struct.pack('!B', uint8_val2)
 
-        message += struct.pack('!B', 3)
-        message += struct.pack('!B', 4)
-        message += struct.pack('!B', 2)
-        message += struct.pack('!B', 1)
-        message += struct.pack('!B', 0)
-        message += struct.pack('!B', 0)
+        self.mode_amplitude(self.message, self.ui.select_mode.value())
 
-        for _ in range(28):
-            uint8_loop = random.randint(0, 16)
-            message += struct.pack('!B', uint8_loop)
-            message += struct.pack('!B', uint8_loop)
-        
-        message += struct.pack('!B', 3)
-        message += struct.pack('!B', 3)
-
-        data_for_checksum = message[:3] + message[7:]
+        data_for_checksum = self.message[:3] + self.message[7:]
         print(len(data_for_checksum))
         checksum = self.calculate_crc32(data_for_checksum)
         print(struct.pack('!I', checksum))
-        print(f"Сообщение длиной {len(message)} байт: {message}")
+        print(f"Сообщение длиной {len(self.message)} байт: {self.message}")
 
         # Insert checksum into the message
-        message = message[:3] + struct.pack('!I', checksum) + message[7:]
-        print(f"Сообщение длиной {len(message)} байт: {message}")
+        self.message = self.message[:3] + struct.pack('!I', checksum) + self.message[7:]
+        print(f"Сообщение длиной {len(self.message)} байт: {self.message}")
 
         # Send the message via UDP
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         try:
-            sock.sendto(message, (ip, port))
+            sock.sendto(self.message, (ip, port))
             print(f"Amplitude message sent to {ip}:{port}")
         except Exception as e:
             print(f"Error sending amplitude message: {e}")
