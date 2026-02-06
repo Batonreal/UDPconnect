@@ -74,6 +74,8 @@ class UDPSenderApp(QMainWindow):
         self.ui.action_about.triggered.connect(self.show_about_dialog)
         self.ui.pushAmplitude.clicked.connect(self.send_amplitude_message)
         self.ui.time_data.clicked.connect(self.toggle_time_data) 
+        self.ui.SPI_button.clicked.connect(self.SPI_input)
+        self.ui.time_period_button.clicked.connect(self.send_time_period_message)
 
         config_file = "config.json"
         default_config = {
@@ -197,7 +199,6 @@ class UDPSenderApp(QMainWindow):
 
         current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
         self.ui.textBrowser.append(f"[{current_time}] Сообщение отправлено на {ip}:{port} ({k} повторений)")
-
 
     def send_saved_data_message(self):
         ip = self.ui.ipConfig.text()
@@ -364,7 +365,6 @@ class UDPSenderApp(QMainWindow):
         elif (mode == 3):
             print("Пока не закончено")
 
-
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
@@ -403,6 +403,76 @@ class UDPSenderApp(QMainWindow):
             print(f"Amplitude message sent to {ip}:{port}")
         except Exception as e:
             print(f"Error sending amplitude message: {e}")
+        finally:
+            sock.close()
+
+    def SPI_input(self):
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+        message = b''
+        
+        uint8_val = 30
+        message += struct.pack('!B', uint8_val)
+        checksum = self.calculate_crc32(message)
+        message += struct.pack('!I', checksum)
+    
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+        try:
+            sock.sendto(message, (ip, port))
+            print(f"SPI send message {ip}:{port}")
+        except Exception as e:
+            print(f"Ошибка при отправке сообщения (SPI): {e}")
+        finally:
+            sock.close()
+
+    def send_time_period_message(self):
+        """Отправка сообщения с ID 41 и 8 значениями времени"""
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+
+        message = b''
+
+        uint8_val = 41
+        uint16_val = 27
+        checksum_placeholder = b'\x00\x00\x00\x00'
+
+        self.cyclic_counter = self.cyclic_counter + 1
+
+        message += struct.pack('!B', uint8_val)
+        message += struct.pack('!H', uint16_val)
+        message += checksum_placeholder
+        message += struct.pack('!I', self.cyclic_counter)
+
+        time_values = [
+            self.ui.time_period_1.value(),
+            self.ui.time_period_2.value(),
+            self.ui.time_period_3.value(),
+            self.ui.time_period_4.value(),
+            self.ui.time_period_5.value(),
+            self.ui.time_period_6.value(),
+            self.ui.time_period_7.value(),
+            self.ui.time_period_8.value()
+        ]
+
+        for time_val in time_values:
+            message += struct.pack('!H', time_val)
+
+        data_for_checksum = message[:3] + message[7:]
+        checksum = self.calculate_crc32(data_for_checksum)
+
+        message = message[:3] + struct.pack('!I', checksum) + message[7:]
+
+        print(f"Сообщение времен периодов длиной {len(message)} байт: {message.hex()}")
+        print(f"Времена: {time_values}")
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        try:
+            sock.sendto(message, (ip, port))
+            print(f"Time period message (ID 41) sent to {ip}:{port}")
+        except Exception as e:
+            print(f"Ошибка при отправке сообщения времен периодов: {e}")
         finally:
             sock.close()
 

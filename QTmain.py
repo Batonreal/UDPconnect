@@ -25,9 +25,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(500, 490)
-        MainWindow.setMinimumSize(QSize(500, 490))
-        MainWindow.setMaximumSize(QSize(500, 490))
+        MainWindow.resize(500, 620)
+        MainWindow.setMinimumSize(QSize(500, 620))
+        MainWindow.setMaximumSize(QSize(500, 620))
         self.action_save = QAction(MainWindow)
         self.action_save.setObjectName(u"action_save")
         self.action_exit = QAction(MainWindow)
@@ -121,7 +121,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.textBrowser)
 
-        self.verticalSpacer_2 = QSpacerItem(10, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.verticalSpacer_2 = QSpacerItem(13, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.verticalLayout.addItem(self.verticalSpacer_2)
 
@@ -238,6 +238,24 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.time_data)
 
+        self.SPI_button = QPushButton(self.centralwidget)
+        self.SPI_button.setObjectName(u"SPI_button")
+        self.SPI_button.setFont(font3)
+        self.SPI_button.setStyleSheet(u"QPushButton {\n"
+"color: black;\n"
+"background-color: rgba(0, 0, 0, 40);\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
+"}\n"
+"QPushButton:hover {\n"
+"background-color: rgba(0, 0, 0, 50);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"background-color: rgba(0, 0, 0, 80);\n"
+"}")
+
+        self.verticalLayout.addWidget(self.SPI_button)
+
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.time_delay_box = QSpinBox(self.centralwidget)
@@ -260,6 +278,180 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_7)
+
+        self.Layout_time1 = QHBoxLayout()
+        self.Layout_time1.setObjectName(u"Layout_time1")
+        self.Layout_time1.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
+        self.vertical_time1 = QVBoxLayout()
+        self.vertical_time1.setObjectName(u"vertical_time1")
+        self.label_5 = QLabel(self.centralwidget)
+        self.label_5.setObjectName(u"label_5")
+
+        self.vertical_time1.addWidget(self.label_5)
+
+        self.time_period_1 = QSpinBox(self.centralwidget)
+        self.time_period_1.setObjectName(u"time_period_1")
+        self.time_period_1.setMaximum(5000)
+        self.time_period_1.setSingleStep(10)
+        self.time_period_1.setValue(0)
+
+        self.vertical_time1.addWidget(self.time_period_1)
+
+
+        self.Layout_time1.addLayout(self.vertical_time1)
+
+        self.vertical_time2 = QVBoxLayout()
+        self.vertical_time2.setObjectName(u"vertical_time2")
+        self.label_6 = QLabel(self.centralwidget)
+        self.label_6.setObjectName(u"label_6")
+
+        self.vertical_time2.addWidget(self.label_6)
+
+        self.time_period_2 = QSpinBox(self.centralwidget)
+        self.time_period_2.setObjectName(u"time_period_2")
+        self.time_period_2.setMaximum(5000)
+        self.time_period_2.setSingleStep(10)
+        self.time_period_2.setValue(310)
+
+        self.vertical_time2.addWidget(self.time_period_2)
+
+
+        self.Layout_time1.addLayout(self.vertical_time2)
+
+        self.vertical_time3 = QVBoxLayout()
+        self.vertical_time3.setObjectName(u"vertical_time3")
+        self.label_15 = QLabel(self.centralwidget)
+        self.label_15.setObjectName(u"label_15")
+
+        self.vertical_time3.addWidget(self.label_15)
+
+        self.time_period_3 = QSpinBox(self.centralwidget)
+        self.time_period_3.setObjectName(u"time_period_3")
+        self.time_period_3.setMaximum(5000)
+        self.time_period_3.setSingleStep(10)
+        self.time_period_3.setValue(810)
+
+        self.vertical_time3.addWidget(self.time_period_3)
+
+
+        self.Layout_time1.addLayout(self.vertical_time3)
+
+        self.vertical_time4 = QVBoxLayout()
+        self.vertical_time4.setObjectName(u"vertical_time4")
+        self.label_16 = QLabel(self.centralwidget)
+        self.label_16.setObjectName(u"label_16")
+
+        self.vertical_time4.addWidget(self.label_16)
+
+        self.time_period_4 = QSpinBox(self.centralwidget)
+        self.time_period_4.setObjectName(u"time_period_4")
+        self.time_period_4.setMaximum(5000)
+        self.time_period_4.setSingleStep(10)
+        self.time_period_4.setValue(1310)
+
+        self.vertical_time4.addWidget(self.time_period_4)
+
+
+        self.Layout_time1.addLayout(self.vertical_time4)
+
+
+        self.verticalLayout.addLayout(self.Layout_time1)
+
+        self.Layout_time2 = QHBoxLayout()
+        self.Layout_time2.setObjectName(u"Layout_time2")
+        self.Layout_time2.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
+        self.vertical_time5 = QVBoxLayout()
+        self.vertical_time5.setObjectName(u"vertical_time5")
+        self.label_17 = QLabel(self.centralwidget)
+        self.label_17.setObjectName(u"label_17")
+
+        self.vertical_time5.addWidget(self.label_17)
+
+        self.time_period_5 = QSpinBox(self.centralwidget)
+        self.time_period_5.setObjectName(u"time_period_5")
+        self.time_period_5.setMaximum(5000)
+        self.time_period_5.setSingleStep(10)
+        self.time_period_5.setValue(3630)
+
+        self.vertical_time5.addWidget(self.time_period_5)
+
+
+        self.Layout_time2.addLayout(self.vertical_time5)
+
+        self.vertical_time6 = QVBoxLayout()
+        self.vertical_time6.setObjectName(u"vertical_time6")
+        self.label_18 = QLabel(self.centralwidget)
+        self.label_18.setObjectName(u"label_18")
+
+        self.vertical_time6.addWidget(self.label_18)
+
+        self.time_period_6 = QSpinBox(self.centralwidget)
+        self.time_period_6.setObjectName(u"time_period_6")
+        self.time_period_6.setMaximum(5000)
+        self.time_period_6.setSingleStep(10)
+        self.time_period_6.setValue(4130)
+
+        self.vertical_time6.addWidget(self.time_period_6)
+
+
+        self.Layout_time2.addLayout(self.vertical_time6)
+
+        self.vertical_time7 = QVBoxLayout()
+        self.vertical_time7.setObjectName(u"vertical_time7")
+        self.label_19 = QLabel(self.centralwidget)
+        self.label_19.setObjectName(u"label_19")
+
+        self.vertical_time7.addWidget(self.label_19)
+
+        self.time_period_7 = QSpinBox(self.centralwidget)
+        self.time_period_7.setObjectName(u"time_period_7")
+        self.time_period_7.setMaximum(5000)
+        self.time_period_7.setSingleStep(10)
+        self.time_period_7.setValue(4630)
+
+        self.vertical_time7.addWidget(self.time_period_7)
+
+
+        self.Layout_time2.addLayout(self.vertical_time7)
+
+        self.vertical_time8 = QVBoxLayout()
+        self.vertical_time8.setObjectName(u"vertical_time8")
+        self.label_20 = QLabel(self.centralwidget)
+        self.label_20.setObjectName(u"label_20")
+
+        self.vertical_time8.addWidget(self.label_20)
+
+        self.time_period_8 = QSpinBox(self.centralwidget)
+        self.time_period_8.setObjectName(u"time_period_8")
+        self.time_period_8.setMaximum(5000)
+        self.time_period_8.setSingleStep(10)
+        self.time_period_8.setValue(4930)
+
+        self.vertical_time8.addWidget(self.time_period_8)
+
+
+        self.Layout_time2.addLayout(self.vertical_time8)
+
+
+        self.verticalLayout.addLayout(self.Layout_time2)
+
+        self.time_period_button = QPushButton(self.centralwidget)
+        self.time_period_button.setObjectName(u"time_period_button")
+        self.time_period_button.setFont(font3)
+        self.time_period_button.setStyleSheet(u"QPushButton {\n"
+"color: black;\n"
+"background-color: rgba(0, 0, 0, 40);\n"
+"border: 2px solid rgba(0, 0, 0, 50);\n"
+"}\n"
+"QPushButton:hover {\n"
+"background-color: rgba(0, 0, 0, 50);\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"background-color: rgba(0, 0, 0, 80);\n"
+"}")
+
+        self.verticalLayout.addWidget(self.time_period_button)
 
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
@@ -321,7 +513,17 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"mode", None))
         self.pushAmplitude.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0430\u043c\u043f\u043b\u0438\u0442\u0443\u0434\u0443", None))
         self.time_data.setText(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0437\u044b \u0438 \u0432\u0440\u0435\u043c\u0435\u043d\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
+        self.SPI_button.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435 SPI", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u0437\u0430\u0434\u0435\u0440\u0436\u043a\u0430, \u043d\u0441", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Time1, \u043d\u0441", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Time2, \u043d\u0441", None))
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Time3 \u043d\u0441", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Time4, \u043d\u0441", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"Time5, \u043d\u0441", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Time6, \u043d\u0441", None))
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Time7, \u043d\u0441", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Time8, \u043d\u0441", None))
+        self.time_period_button.setText(QCoreApplication.translate("MainWindow", u"\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0434\u0438\u0430\u0433\u0440\u0430\u043c\u043c\u0443 \u043f\u043e\u043b\u0443\u043f\u0435\u0440\u0438\u043e\u0434\u0430", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
         self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043f\u0440\u0430\u0432\u043a\u0430", None))
     # retranslateUi
