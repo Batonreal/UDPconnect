@@ -480,7 +480,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>310</number>
+             <number>330</number>
             </property>
            </widget>
           </item>
@@ -504,7 +504,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>810</number>
+             <number>830</number>
             </property>
            </widget>
           </item>
@@ -528,7 +528,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>1310</number>
+             <number>1130</number>
             </property>
            </widget>
           </item>
@@ -559,7 +559,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>3630</number>
+             <number>3670</number>
             </property>
            </widget>
           </item>
@@ -583,7 +583,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>4130</number>
+             <number>4170</number>
             </property>
            </widget>
           </item>
@@ -607,7 +607,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>4630</number>
+             <number>4670</number>
             </property>
            </widget>
           </item>
@@ -631,7 +631,7 @@ background-color: rgba(0, 0, 0, 80);
              <number>10</number>
             </property>
             <property name="value">
-             <number>4930</number>
+             <number>4970</number>
             </property>
            </widget>
           </item>

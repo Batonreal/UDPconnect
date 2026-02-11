@@ -311,7 +311,7 @@ class Ui_MainWindow(object):
         self.time_period_2.setObjectName(u"time_period_2")
         self.time_period_2.setMaximum(5000)
         self.time_period_2.setSingleStep(10)
-        self.time_period_2.setValue(310)
+        self.time_period_2.setValue(330)
 
         self.vertical_time2.addWidget(self.time_period_2)
 
@@ -329,7 +329,7 @@ class Ui_MainWindow(object):
         self.time_period_3.setObjectName(u"time_period_3")
         self.time_period_3.setMaximum(5000)
         self.time_period_3.setSingleStep(10)
-        self.time_period_3.setValue(810)
+        self.time_period_3.setValue(830)
 
         self.vertical_time3.addWidget(self.time_period_3)
 
@@ -347,7 +347,7 @@ class Ui_MainWindow(object):
         self.time_period_4.setObjectName(u"time_period_4")
         self.time_period_4.setMaximum(5000)
         self.time_period_4.setSingleStep(10)
-        self.time_period_4.setValue(1310)
+        self.time_period_4.setValue(1130)
 
         self.vertical_time4.addWidget(self.time_period_4)
 
@@ -371,7 +371,7 @@ class Ui_MainWindow(object):
         self.time_period_5.setObjectName(u"time_period_5")
         self.time_period_5.setMaximum(5000)
         self.time_period_5.setSingleStep(10)
-        self.time_period_5.setValue(3630)
+        self.time_period_5.setValue(3670)
 
         self.vertical_time5.addWidget(self.time_period_5)
 
@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.time_period_6.setObjectName(u"time_period_6")
         self.time_period_6.setMaximum(5000)
         self.time_period_6.setSingleStep(10)
-        self.time_period_6.setValue(4130)
+        self.time_period_6.setValue(4170)
 
         self.vertical_time6.addWidget(self.time_period_6)
 
@@ -407,7 +407,7 @@ class Ui_MainWindow(object):
         self.time_period_7.setObjectName(u"time_period_7")
         self.time_period_7.setMaximum(5000)
         self.time_period_7.setSingleStep(10)
-        self.time_period_7.setValue(4630)
+        self.time_period_7.setValue(4670)
 
         self.vertical_time7.addWidget(self.time_period_7)
 
@@ -425,7 +425,7 @@ class Ui_MainWindow(object):
         self.time_period_8.setObjectName(u"time_period_8")
         self.time_period_8.setMaximum(5000)
         self.time_period_8.setSingleStep(10)
-        self.time_period_8.setValue(4930)
+        self.time_period_8.setValue(4970)
 
         self.vertical_time8.addWidget(self.time_period_8)
 
