@@ -15,7 +15,7 @@ PORT_NUMBER = 19002
 
 
 class UDPReceiverThread(QThread):
-    message_received = Signal(str)
+    message_received = Signal(bytes)
 
     def __init__(self, port):
         super().__init__()
@@ -30,9 +30,7 @@ class UDPReceiverThread(QThread):
         while self.running:
             try:
                 data, addr = self.sock.recvfrom(1024)  
-                uint8_values = [f"{byte:02X}" for byte in data]
-                message = " ".join(uint8_values)
-                self.message_received.emit(message) 
+                self.message_received.emit(data) 
             except OSError:
                 break
         
@@ -76,6 +74,11 @@ class UDPSenderApp(QMainWindow):
         self.ui.time_data.clicked.connect(self.toggle_time_data) 
         self.ui.SPI_button.clicked.connect(self.SPI_input)
         self.ui.time_period_button.clicked.connect(self.send_time_period_message)
+        self.ui.Reset_button.clicked.connect(self.reset_input)
+
+        # включить если нужно отправить тестовое сообщение 0x65 самому себе 
+        # для проверки приёма и отображения led, закоменитровать кнопку reset
+        # self.ui.Reset_button.clicked.connect(self.send_test_status_message)
 
         config_file = "config.json"
         default_config = {
@@ -119,6 +122,7 @@ class UDPSenderApp(QMainWindow):
         finally:
             sock.close()
     
+    # однократная отправка
     def send_bin_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
@@ -200,6 +204,7 @@ class UDPSenderApp(QMainWindow):
         current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
         self.ui.textBrowser.append(f"[{current_time}] Сообщение отправлено на {ip}:{port} ({k} повторений)")
 
+    # отправка каждую секунду
     def send_saved_data_message(self):
         ip = self.ui.ipConfig.text()
         port = int(self.ui.portConfig.text())
@@ -244,9 +249,9 @@ class UDPSenderApp(QMainWindow):
             else:
                 impulse_ns_1 = 318000000
             impulse_ns_2 = 10000000
-            impulse_ns_5 = 10000000
             impulse_ns_3 = 10000000
             impulse_ns_4 = 10000000
+            impulse_ns_5 = 10000000
             impulse_ns_6 = 10000000
             impulse_ns_7 = 10000000
             impulse_ns_8 = 10000000
@@ -266,7 +271,7 @@ class UDPSenderApp(QMainWindow):
 
         # Calculate checksum
         data_for_checksum = message[:3] + message[7:]
-        print(len(data_for_checksum))
+        # print(len(data_for_checksum))
         checksum = self.calculate_crc32(data_for_checksum)
         # print(struct.pack('!I', checksum))
         # print(f"Сообщение длиной {len(message)} байт: {message}")
@@ -363,7 +368,35 @@ class UDPSenderApp(QMainWindow):
                 self.message += struct.pack('!B', uint8_loop)
 
         elif (mode == 3):
-            print("Пока не закончено")
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 16)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 0)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 14)
+            self.message += struct.pack('!B', 12)
+            self.message += struct.pack('!B', 12)
+            self.message += struct.pack('!B', 9)
+            self.message += struct.pack('!B', 9)
+            self.message += struct.pack('!B', 7)
+            self.message += struct.pack('!B', 7)
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 5)
+            self.message += struct.pack('!B', 3)
+            self.message += struct.pack('!B', 3)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 2)
+            self.message += struct.pack('!B', 1)
+            self.message += struct.pack('!B', 1)
+            
+            for _ in range(20):
+                uint8_loop = 0
+                self.message += struct.pack('!B', uint8_loop)
+                self.message += struct.pack('!B', uint8_loop)
 
     def send_amplitude_message(self):
         ip = self.ui.ipConfig.text()
@@ -423,6 +456,57 @@ class UDPSenderApp(QMainWindow):
             print(f"SPI send message {ip}:{port}")
         except Exception as e:
             print(f"Ошибка при отправке сообщения (SPI): {e}")
+        finally:
+            sock.close()
+
+    def reset_input(self):
+        ip = self.ui.ipConfig.text()
+        port = int(self.ui.portConfig.text())
+        message = b''
+        
+        uint8_val = 52
+        message += struct.pack('!B', uint8_val)
+        checksum = self.calculate_crc32(message)
+        message += struct.pack('!I', checksum)
+    
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+        try:
+            sock.sendto(message, (ip, port))
+            print(f"Reset send message {ip}:{port}")
+        except Exception as e:
+            print(f"Ошибка при отправке сообщения (Reset): {e}")
+        finally:
+            sock.close()
+
+    def send_test_status_message(self):
+        """Тестовая отправка сообщения 0x65 самому себе."""
+        gvi_bytes = bytes([0xFF, 0xFF, 0xFF, 0x00, 0x55, 0x00, 0x00, 0x00])
+
+        message = b''
+        msg_id = 0x65
+        status_word = 0x00
+        info_length = 1 + 8 * 3
+
+        message += struct.pack('!B', msg_id)
+        message += struct.pack('!H', info_length)
+        checksum_placeholder = b'\x00\x00\x00\x00'
+        message += checksum_placeholder
+        message += struct.pack('!B', status_word)
+        message += gvi_bytes
+        message += gvi_bytes
+        message += gvi_bytes
+
+        data_for_checksum = message[:3] + message[7:]
+        checksum = self.calculate_crc32(data_for_checksum)
+        message = message[:3] + struct.pack('!I', checksum) + message[7:]
+
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            sock.sendto(message, ('127.0.0.1', PORT_NUMBER))
+            print(f"Тестовое сообщение 0x65 отправлено на 127.0.0.1:{PORT_NUMBER}")
+        except Exception as e:
+            print(f"Ошибка при отправке тестового сообщения: {e}")
         finally:
             sock.close()
 
@@ -501,9 +585,58 @@ class UDPSenderApp(QMainWindow):
                     crc >>= 1
         return crc ^ 0xFFFFFFFF
     
-    def display_received_message(self, message):
+    def display_received_message(self, data):
         current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        self.ui.textBrowser.append(f"[{current_time}] {message}")
+        hex_message = " ".join(f"{byte:02X}" for byte in data)
+        self.ui.textBrowser.append(f"[{current_time}] {hex_message}")
+
+        if len(data) >= 1 and data[0] == 0x65:
+            self.parse_status_message(data)
+
+    def parse_status_message(self, data):
+        if len(data) < 32:
+            print("[0x65] Ошибка: недостаточно данных")
+            return
+
+        msg_id = data[0]
+        length = struct.unpack('!H', data[1:3])[0]
+        crc_received = struct.unpack('!I', data[3:7])[0]
+        status_word = data[7]
+
+        data_for_checksum = data[:3] + data[7:]
+        crc_calculated = self.calculate_crc32(data_for_checksum)
+
+        crc_ok = crc_received == crc_calculated
+        crc_status = "OK" if crc_ok else f"ОШИБКА (получено: {crc_received:#010X}, вычислено: {crc_calculated:#010X})"
+        print(f"[0x65] Длина: {length}, CRC32: {crc_status}, Состояние: {status_word:#04X}")
+
+        if crc_ok:
+            gvi1_bytes = data[8:16]
+            gvi2_bytes = data[16:24]
+            gvi3_bytes = data[24:32]
+            self.update_leds(gvi1_bytes, "")
+            self.update_leds(gvi2_bytes, "_2")
+            self.update_leds(gvi3_bytes, "_3")
+
+    def update_leds(self, gvi_bytes, suffix):
+        for i in range(20):
+            byte_index = i // 4
+            bit_offset = (i % 4) * 2
+            bits = (gvi_bytes[byte_index] >> bit_offset) & 0x03
+
+            led_name = f"led{i + 1}{suffix}"
+            led = getattr(self.ui, led_name, None)
+            if led is None:
+                continue
+
+            if bits == 0b00:
+                led.setRed()
+            elif bits == 0b01:
+                led.setYellow()
+            elif bits == 0b11:
+                led.setGreen()
+            else:  # 0b10
+                led.setGray()
 
     def closeEvent(self, event):
         self.rt.stop()
